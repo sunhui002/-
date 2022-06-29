@@ -86,10 +86,10 @@
                 // },
                 success:function(oJson){
                     if(!oJson.Result){
-                        layer.msg(data.msg,{icon: 5});//失败的表情
+                        layer.msg(oJson.ErrorMessage,{icon: 5});//失败的表情
                         return;
                     }else {
-                        localStorage.setItem('token',data.Result);
+                        localStorage.setItem("token",oJson.KeyValue);
                         window.location = 'admin.html';
                         // layer.msg(data.msg, {
                         //     icon: 6,//成功的表情

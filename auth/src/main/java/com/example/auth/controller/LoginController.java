@@ -9,6 +9,8 @@ import com.example.auth.Entity.MessageResult;
 import com.example.auth.Entity.User;
 import com.example.auth.utils.MD5Util;
 import com.example.auth.utils.CsoftSecurityUtil;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,9 +44,16 @@ public class LoginController {
                                @RequestParam String code
     ) throws NoSuchPaddingException, IOException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException, InvalidKeySpecException {
         System.out.println("登录");
-
-        String s = CsoftSecurityUtil.decryptRSADefault(privatekey, password);
-        return MessageResult.success("nihao");
+        User user = userDao.getuserbyid(username);
+        System.out.println(password+"    "+user.salt);
+        if(password.isEmpty()||!MD5Util.getMD5Str(password+user.salt).equals(user.password)) {
+            return MessageResult.error("密码不正确");
+        }
+        String token = MD5Util.getSalt(20);
+        Cache<String, String> cache = Caffeine.newBuilder()
+                .build();
+        cache.put(token,username);
+        return MessageResult.success(token);
 
     }
     @PostMapping("/sso/register")
@@ -52,9 +61,10 @@ public class LoginController {
                                @RequestParam String password,
                                @RequestParam String code
     ) throws NoSuchPaddingException, IOException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException, InvalidKeySpecException {
-        System.out.println("登录");
+        System.out.println("注册");
         String salt = MD5Util.getSalt(10);
         String newpassword = MD5Util.getMD5Str(password + salt);
+        System.out.println(password+"    "+salt);
         User user = new User();
         user.setUsername(username);
         user.setSalt(salt);
@@ -72,11 +82,9 @@ public class LoginController {
 //    envtype: 2
     @GetMapping("/account/getClientData")
     public MessageResult getClientData(@RequestParam String token){
-//        public MessageResult getClientData(){
+
         System.out.println("正在登录中");
-//        User nihao = new User("nihao");
-//        Map<String,Object> map=new HashMap<>();
-//        map.put("user",nihao);
+
         List<String> system = roleDao.getmenusbyrole("system");
         List<Menu> selectbymenuguid = menuDao.selectbymenuguid(system);
         Map<String,Menu> Mmap=new HashMap<>();
@@ -111,7 +119,11 @@ public class LoginController {
     public static void main(String[] args) throws NoSuchAlgorithmException {
         String RunUrl="你好.html";
         String Caption="准备";
-        System.out.println("<a href=\""+RunUrl+"\" data-id=\"" + RunUrl + "\" data-title=\"" + RunUrl +"\" class=\"" +"subMenu" + "\" data-url=\"" + RunUrl + "\">" + RunUrl + "</a>");
-//        CsoftSecurityUtil.createKeyPairs();
+        String md5Str1 = MD5Util.getMD5Str("1" + "mGCV4uO03R");
+        String md5Str2 = MD5Util.getMD5Str("1" + "mGCV4uO03R");
+        System.out.println(md5Str1);
+        System.out.println(md5Str2);
+//        System.out.println("<a href=\""+RunUrl+"\" data-id=\"" + RunUrl + "\" data-title=\"" + RunUrl +"\" class=\"" +"subMenu" + "\" data-url=\"" + RunUrl + "\">" + RunUrl + "</a>");
+////        CsoftSecurityUtil.createKeyPairs();
     }
 }
