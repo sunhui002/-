@@ -19,7 +19,7 @@
 <!--</video>-->
 <div class="video_mask"></div>
 <div class="login">
-    <h1>layuiCMS-管理登录</h1>
+    <h1>layuiCMS-注册</h1>
     <form class="layui-form">
         <div class="layui-form-item">
             <input class="layui-input" name="username" placeholder="用户名" lay-verify="required" type="text" autocomplete="off">
@@ -31,7 +31,7 @@
             <input class="layui-input" name="code" placeholder="验证码" lay-verify="required" type="text" autocomplete="off">
             <div class="code"><img src="../../code.jpg" width="116" height="36"></div>
         </div>
-        <button class="layui-btn login_btn" lay-submit="" lay-filter="login">登录</button>
+        <button class="layui-btn login_btn" lay-submit="" lay-filter="login">注册</button>
     </form>
 </div>
 <script type="text/javascript" src="../../layui/layui.js"></script>
@@ -72,7 +72,7 @@
         //登录按钮事件
         form.on("submit(login)",function(data){
             var userInfo = data.field;
-            var url = "api/sso/login";
+            var url = "api/sso/register";
             $.ajax({
                 url:url,
                 type:'post',
@@ -89,8 +89,8 @@
                         layer.msg(data.msg,{icon: 5});//失败的表情
                         return;
                     }else {
-                        localStorage.setItem('token',data.Result);
-                        window.location = 'admin.html';
+                        // localStorage.setItem('token',data.Result);
+                        window.location = 'login.html';
                         // layer.msg(data.msg, {
                         //     icon: 6,//成功的表情
                         //     time: 1000 //1秒关闭（如果不配置，默认是3秒）

@@ -13,7 +13,16 @@ public class User {
     public String tenementname;
     public String user_id;
     public String username;
+    public String salt;
     public List<Menu> SubNodes;
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
 
     public String getPassword() {
         return password;

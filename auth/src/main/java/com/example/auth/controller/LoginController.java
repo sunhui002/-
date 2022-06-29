@@ -3,9 +3,11 @@ package com.example.auth.controller;
 
 import com.example.auth.Dao.MenuDao;
 import com.example.auth.Dao.RoleDao;
+import com.example.auth.Dao.UserDao;
 import com.example.auth.Entity.Menu;
 import com.example.auth.Entity.MessageResult;
 import com.example.auth.Entity.User;
+import com.example.auth.utils.MD5Util;
 import com.example.auth.utils.CsoftSecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +16,6 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -23,7 +24,8 @@ import java.util.*;
 @RestController
 @RequestMapping("/api")
 public class LoginController {
-
+      @Autowired
+    UserDao userDao;
 //    loginid: wcadmin
 //    password: c4ca4238a0b923820dcc509a6f75849b
 //    verifykey: c1f516bd-1e93-8917-e3f2-8eac594b0419
@@ -43,6 +45,23 @@ public class LoginController {
 
         String s = CsoftSecurityUtil.decryptRSADefault(privatekey, password);
         return MessageResult.success("nihao");
+
+    }
+    @PostMapping("/sso/register")
+    public MessageResult register(@RequestParam String username,
+                               @RequestParam String password,
+                               @RequestParam String code
+    ) throws NoSuchPaddingException, IOException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException, InvalidKeySpecException {
+        System.out.println("登录");
+        String salt = MD5Util.getSalt(10);
+        String newpassword = MD5Util.getMD5Str(password + salt);
+        User user = new User();
+        user.setUsername(username);
+        user.setSalt(salt);
+        user.setPassword(newpassword);
+        int saveuser = userDao.saveuser(user);
+       if(saveuser>0) return MessageResult.Ok(true);
+        return MessageResult.error("注册失败");
 
     }
     @Autowired
