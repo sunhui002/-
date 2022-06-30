@@ -1,0 +1,67 @@
+权限：每个角色不同的编码，将对应的角色和编码注册的用户中心，在这用户中心分配账号与对应的权限
+该用户登录系统后，后台携带用户信息去请求用户中心获取对应的角色编码，将用户信息与角色编码缓存
+通过拦截器和对应的接口的权限码，来限制用户的访问。
+1.如何防止绕过用户中心直接访问后台。
+
+
+DSC(质量评估前段页面)：datariver/12345678Aa
+DTP:sx-9793 3Vex55Ree5
+运行支撑：cbbadmin/DtDream@020
+
+MD5，SHA。HMAC都是单向加密，无法解密，加密效率高(通常用于两边加密后比对)，所以前端将密码MD5加密后，直接将加密后的密文当作密码保存。
+AES，DES为对称加密
+RSA，DSA为非对称加密，加密时间比解密时间短。
+
+注册时，后台生成一个随机盐然后跟随传过来的密文进行MD5加密，然后将盐和加密后的密文保存为password
+就算拿到了盐和密文，首先标准密码库失效(明文：密文)，第二也无法快速判断出那些都是弱密码(时间效应，如果没有盐相同弱密码一次就能破解，而有盐就需要对每一个密码破解)
+  
+
+Token一般用于临时登录不会包含用户信息，
+而ticket则会包含用户信息(可以解密出用户信息，这样就可以不通过session来保存用户信息，可以有效减少服务器的压力)
+只在有需要时才解密ticket，无法想cookie+session实现尝试长时间的免登录。
+
+登录请求正确，生产一个token放入带有过期时间的本地缓存，响应前端一个token，前端拿到token后放入
+请求头中，后端通过过滤器或者拦截器判断token，获取到Token后去缓存中拿到用户信息便说明正确，
+未拿到则拒绝访问
+
+客户端登陆成功，session将用户信息保存，后台将session持久化到本地(何种形式)，cookie存放sessionid。
+在这一次链接还是可以直接拿到session中用户信息，来判断该用户是否登录过。这次链接断开后，浏览器重新
+请求登录页面，页面加载通过钩子函数拿到客户端的cookie，再将cookie发送到后台的登录接口，
+有对应的session怎跳转。
+(未经过后端服务器如何判断cookie中的信息，前端页面是怎么判断然后跳转页面的呢)
+
+每个页面都需要验证吗，不然如何实现未登录用户无法绕过登录页面，通过过滤或者拦截来判断。
+
+license和assceekey分别的作用
+
+oracle
+表 RUOX.XQ4_BIG_err 无法通过 128 (在表空间 USER_DATA 中) 扩展
+INSERT INTO "XQ4_BIG_err" ("ID", "NUM", "DQ", "RKSJ", "DD", "ZP", "ZL", "HXY", "LF", "WA", "COL_DOUBLE", "COL_DECIMAL", "err_field", "err_data", "err_rule_ver", "err_rule_code", "err_rule_name", "err_type", "err_desc", "err_action_code", "err_auth_data", "err_date") SELECT "XQ4_BIG"."ID", "XQ4_BIG"."NUM", "XQ4_BIG"."DQ", "XQ4_BIG"."RKSJ", "XQ4_BIG"."DD", "XQ4_BIG"."ZP", "XQ4_BIG"."ZL", "XQ4_BIG"."HXY", "XQ4_BIG"."LF", "XQ4_BIG"."WA", "XQ4_BIG"."COL_DOUBLE", "XQ4_BIG"."COL_DECIMAL", 'NUM', "XQ4_BIG"."NUM", '1', 'R100010200002', '市级区划编码校验', 'ACCURACY', concat(concat(concat('', '字段NUM值【'), "NUM"), '】不符合市级区划编码校验规则'), 'DQA_3_168_20220621104037', '', to_char(sysdate, 'yyyy-mm-dd hh24:mi:ss') FROM "XQ4_BIG" WHERE NOT REGEXP_LIKE("NUM", '^(1[1-5]|2[1-3]|3[1-7]|4[1-6]|5[0-4]|6[1-5]|71|8[1-3])(0[1-9]|[1-6][0-9]|70|90)00$')
+
+oralce
+insert into "XQ4_BIG_err"( "ID","NUM","DQ","RKSJ","DD","ZP","ZL","HXY","LF","WA","COL_DOUBLE","COL_DECIMAL","err_field","err_data","err_rule_ver","err_rule_code","err_rule_name","err_type","err_desc","err_action_code","err_auth_data","err_date") SELECT "XQ4_BIG"."ID", "XQ4_BIG"."NUM", "XQ4_BIG"."DQ", "XQ4_BIG"."RKSJ", "XQ4_BIG"."DD", "XQ4_BIG"."ZP", "XQ4_BIG"."ZL", "XQ4_BIG"."HXY", "XQ4_BIG"."LF", "XQ4_BIG"."WA", "XQ4_BIG"."COL_DOUBLE", "XQ4_BIG"."COL_DECIMAL", '', '', '1', 'R100010100019', '唯一性核验规则', 'UNIQUENESS', concat('', '字段ID不符合唯一性规则'), 'DQA_3_41_20220620170758', '', to_char(sysdate, 'yyyy-mm-dd hh24:mi:ss') FROM (SELECT "ID" FROM "XQ4_BIG" WHERE (NOT ("ID" IS NULL) GROUP BY "ID" HAVING COUNT(*) > 1) a JOIN "XQ4_BIG" ON "XQ4_BIG"."ID" = a."ID") and rownum <= 200
+
+
+（用户与管理员有着不同的账号）
+用户                  系统管理员
+
+顾客                   租户配置(用户中顾客和店家分别拥有的)
+商品                   
+购物车
+个人信息
+秒杀
+
+店家
+商品
+上架商品
+未上架商品
+个人信息
+秒杀
+
+表：user{id, roleid, username, password, salt }
+      role{roleid,rolename}
+      role_tenant_menu(id,roleid,menuid,tenantid)
+      tenant(tenantid,tenantname)
+     goods(goodid,goodname,pic,descrition,attr_list,createdate,modifydate)
+     goods_attr()
+    
