@@ -6,3 +6,27 @@ CREATE TABLE IF NOT EXISTS `user`(
    `create_date` DATE,
    PRIMARY KEY ( `user_id` )
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `spu`(
+   `spu_id` INT UNSIGNED AUTO_INCREMENT,
+   `spu_name` VARCHAR(100) NOT NULL,
+   `spu_description` VARCHAR(40) NOT NULL,
+   `create_date` DATE,
+   PRIMARY KEY ( `spu_id` )
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `sku`(
+   `sku_id` INT UNSIGNED AUTO_INCREMENT,
+   `spu_id` VARCHAR(100) NOT NULL,
+   `attr_name` VARCHAR(40) NOT NULL,
+   `create_date` DATE,
+   PRIMARY KEY ( `sku_id` )
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `attr`(
+   `attr_id` INT UNSIGNED AUTO_INCREMENT,
+   `sku_id` VARCHAR(100) NOT NULL,
+   `attr_value` VARCHAR(40) NOT NULL,
+   `create_date` DATE,
+   PRIMARY KEY ( `attr_id` )
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;

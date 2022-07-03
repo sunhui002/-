@@ -123,7 +123,6 @@ public class LoginController {
         String md5Str2 = MD5Util.getMD5Str("1" + "mGCV4uO03R");
         System.out.println(md5Str1);
         System.out.println(md5Str2);
-//        System.out.println("<a href=\""+RunUrl+"\" data-id=\"" + RunUrl + "\" data-title=\"" + RunUrl +"\" class=\"" +"subMenu" + "\" data-url=\"" + RunUrl + "\">" + RunUrl + "</a>");
-////        CsoftSecurityUtil.createKeyPairs();
+        System.out.println("select spu_id, spu_name,spu_price,spu_img,spu_description from spu where spu_description like '%${decription}%' ");
     }
 }

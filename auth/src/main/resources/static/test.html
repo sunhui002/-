@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../layui/jquery-1.12.4.js"></script>
+</head>
+<body>
+<script>
+    function  myfun()
+    { 　　$.ajax({
+        type: "post",
+        // async: true,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        url: "http://127.0.0.1:8081/api/es/equipmentStatus",    //请求发送到TestServlet处
+        data: {"keyword": getQueryVariable(keyword)},
+        dataType: "json",        //返回数据形式为json
+        success: function (result) {
+            //请求成功时执行该函数内容，result即为服务器返回的json对象
+            console.log(result.data);
+            //console.log(data);
+            $.each(result.data, function (index, product) {
+                console.log(product);
+                divHtml +=
+                    " <p class=\"da\">\n" +
+                    "       <a th:href=\"item/" +product.skuId+".html\" >\n" +
+                    "       <img class=\"dim\" th:src=\"" +product.skuImg +"\">\n" +
+                    "       </a>\n" +
+                    " </p>\n" +
+                    " <ul class=\"tab_im\">\n" +
+                    "      <li><a href=\"/static/search/#\" title=\"黑色\">\n" +
+                    "      <img th:src=\"" +product.skuImg +"\"></a></li>\n" +
+                    " </ul>\n" +
+                    "<p class=\"tab_R\">\n" +
+                    "      <span th:text=\"'￥' +" + product.skuPrice +"\">¥5199.00</span>\n" +
+                    "</p>\n" +
+                    "<p class=\"tab_JE\">\n" +
+                    "        <a href=\"/static/search/#\" th:utext=\"" +product.skuTitle +"\">\n" +
+                    product.decription +
+                    "        </a>\n" +
+                    "</p>\n" +
+                    " <p class=\"tab_PI\">已有<span>11万+</span>热门评价\n" +
+                    "      <a href=\"/static/search/#\">二手有售</a>\n" +
+                    " </p>\n" +
+                    "<p class=\"tab_CP\"><a href=\"/static/search/#\" title=\"谷粒商城Apple产品专营店\">谷粒商城Apple产品...</a>\n" +
+                    "        <a href='#' title=\"联系供应商进行咨询\">\n" +
+                    "               <img src=\"/layui/img/xcxc.png\">\n" +
+                    "        </a>" +
+                    "</p>/n" +
+                    " <div class=\"tab_FO\">\n" +
+                    "      <div class=\"FO_one\">\n" +
+                    "             <p>自营\n" +
+                    "                  <span>谷粒商城自营,品质保证</span>\n" +
+                    "              </p>\n" +
+                    "              <p>满赠\n" +
+                    "                   <span>该商品参加满赠活动</span>\n" +
+                    "               </p>\n" +
+                    "       </div>\n" +
+                    "</div>";
+            )};
+            document.getElementById("rig_tab").innerHTML = divHtml;
+
+
+        },
+        error: function (errorMsg) {
+            //请求失败时执行该函数
+            alert("请求数据失败!");
+        }
+
+    });
+    } 　　 /*用window.onload调用myfun()*/
+    window.onload = myfun; //不要括号
+</script>
+</body>
+</html>
