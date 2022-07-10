@@ -10,7 +10,7 @@ spring:
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
   thymeleaf:
-    prefix: classpath:/templates/
+    prefix: classpath:/static/
     cache: false
     suffix: .html
 mybatis-plus:

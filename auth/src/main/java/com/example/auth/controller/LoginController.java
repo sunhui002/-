@@ -22,6 +22,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/api")
@@ -37,6 +38,11 @@ public class LoginController {
     private String privatekey=
             "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCCPZUUrgZpXB1TzxQJbGK9HHUFWlRGqByreBh7zGQUWndhsaMRGlNB8pHf6asyGO8SNPAKDowCLCr6MYadzjvIT7xsBVmZMe/lvAACBujAcZhHtff/xnxheeUbTFQ3QyZeFkPTz+b11oiGsuwk/DNUQDiI3uwSaLrUoN/4fXxGtFdbFHoB8vhEEs/c3m64T+U804nfeWy1KTTuOnaC+cgD3vUeMprp/q8KvuIUha6H/RH0DxNCmNl3M1aaHV0Qwz1QXIy0bOGNWK2FUQrpX3NfAUljsnMtnXjkxR91PlpN/rATbp9aiKR7lkMdj1JjBtdg6r5W2tTait0//4fuAfUhAgMBAAECggEAMW6CKMksMcz+bJLJ/hGfIDuuxotUNUUVLJd2Y3Zd/cOgT/oF9DXTp9ITP7MGgQspofVprcd7qE9vOGqXt0lRM2PgFfep3BUyAjXqotpQeMokjAMqz29cQfrr1AKSbC8WXtuAfuIHvQLh6o36RsdaC/4b9wb0/r+1OYKdv0iRZJv75RCDXRaItSmhIgQSIKnu0aDadm7bFZ8eHpY8ZRqhUAPPzn7gbuDzXCTQfuH8wnJiLA8y4y9T5uPne8+up5dBOG66nHiDKiAFEy/99J4h4np/z0+1Cx4KBL17DRndkBLiHNjb/5fRjiUqiYzNe9pVoLkWbyO3BONgV9NwugDxKQKBgQDlCrn3dRDaInL0IkbDhBl9so+oKLDIhickwT1Rv9n9AD64UZu3b2BnduNESif0jbe56rVtI/+F+vWE1cUf1aKsFGdjnibNfjsQJ+3Z/rOenE3mKsuCC1DPMnCWcqYWfn8qjBCTDtZoejncSeJ8HmK1CSe4UV9JvvqbCytY9tpkTwKBgQCRkd4OZn7itY5rvIPTFnKjR1SIcxyGaiSgPpBOqCtl4S2BbBX2isMkgx8al8Qs6asqUML8m8Q2IXLW2qU8+IoslTrYp2sx0QsjhGc7/AW8V4mulNBBR1GHj4yBKWgCf7tGN0lfjWF+PoIASre8WLELpg4UnOpn4fdUTsQ+9vkDjwKBgQCcfSSsTx6xe0IBTX39zb7A5ARFB3ApwYbzFNh5h1RACS/RLWjv/rfmWRNUMDp2W3GBJDzLEgJenyWqmYfyhTt8yQAOzxqB4lImarGW9O/yWabbsLeU5XhT6ImGMVULH2hxQHt+jm+tuHzZ5t1IolYcjOHHjElHkKWW0x3NzfNO/wKBgC/zcMYllR5w1909V98swc5vLLVV1cuhIzd15GtEkicZKbg8Nm/j/awFVTWZUJHK1ws1V0WGufdqxT1pAI05Aar17VB4taLPTXABqU/lEK6d10ie1IrsRzr0WkAht5U7JiFXDOBg3gCL7p7R/fwY6xj/NhwsJDrcAHDREWv8RsKZAoGALntf5FTk4TMVCL/+6++PBT8kXZK+qLFTOgPuSEzw7qRXFapWPeihNi2hAMCVRxIak6SnPezSPNesHohjFYBm+Bi6KxT2Rvn5uryS/8RdhPZq6p3Q8y1g/1kcBTAdG0vCE3jzXkdJ0KC3wzqj8hG3X+fsUyWuUR8IhTU/+aCx+u8=";
 
+    public  static Cache<String, String> cache;
+    static {
+        cache=Caffeine.newBuilder().expireAfterAccess(10, TimeUnit.SECONDS)
+                .build();
+    }
 
     @PostMapping("/sso/login")
     public MessageResult login(@RequestParam String username,
@@ -50,8 +56,6 @@ public class LoginController {
             return MessageResult.error("密码不正确");
         }
         String token = MD5Util.getSalt(20);
-        Cache<String, String> cache = Caffeine.newBuilder()
-                .build();
         cache.put(token,username);
         return MessageResult.success(token);
 

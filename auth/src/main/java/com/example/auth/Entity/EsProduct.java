@@ -9,10 +9,14 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
-@Document(indexName = "product")
+@Document(indexName = "product" ,createIndex=true)
 public class EsProduct {
 
     @Id
+    @Field
+    public int productid;
+
+    @Field(type =FieldType.Text)
     public String spuId;
 
     @Field(type =FieldType.Text)
@@ -28,7 +32,7 @@ public class EsProduct {
     public String decription;
 
     @Field(type = FieldType.Nested, includeInParent = true)
-    public List<EsAttr> attr;
+    public List<EsAttr> attrs;
 
     public String getSpuId() {
         return spuId;
@@ -71,13 +75,21 @@ public class EsProduct {
     }
 
     public List<EsAttr> getAttr() {
-        return attr;
+        return attrs;
     }
 
-    public void setAttr(List<EsAttr> attr) {
-        this.attr = attr;
+    public void setAttr(List<EsAttr> attrs) {
+        this.attrs = attrs;
     }
-//    @Component
+
+    public int getProductid() {
+        return productid;
+    }
+
+    public void setProductid(int productid) {
+        this.productid = productid;
+    }
+    //    @Component
 //    public class EsAttr{
 //
 //       public String attrname;

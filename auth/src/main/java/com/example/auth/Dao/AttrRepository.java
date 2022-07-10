@@ -10,4 +10,7 @@ import java.util.List;
 public interface AttrRepository extends ElasticsearchRepository<EsProduct,String> {
 
        List<EsProduct> findEsProductBySpuTitle(String spuTitle);
+
+       List<EsProduct> findBySpuTitleAndAttr(String spuTitle,List<String> attrs);
+
 }

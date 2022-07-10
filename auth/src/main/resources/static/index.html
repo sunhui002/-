@@ -117,6 +117,13 @@
             <!--<button><i class="glyphicon"></i></button>-->
             <a href="#" ><img src="/layui/img/img_09.png" onclick="search()" /></a>
         </div>
+<!--                <div class="header_form" th:action="@{/api/es/rsearch}">-->
+<!--                    <input id="searchText" type="text" placeholder="" />-->
+<!--                    <span style="background: url(/layui/img/img_12.png) 0 -1px;"></span>-->
+<!--                    &lt;!&ndash;<button><i class="glyphicon"></i></button>&ndash;&gt;-->
+<!--                    <a href="#" ><img src="/layui/img/img_09.png"  /></a>-->
+<!--                </div>-->
+
         <div class="header_ico">
             <div class="header_gw">
                 <img src="/layui/img/img_15.png" />
@@ -583,6 +590,17 @@
     function search() {
         var keyword=$("#searchText").val()
         window.location.href="search.html?keyword="+keyword;
+        // $.ajax({
+        //             type: "get",
+        //             async: true,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        //             url: "http://127.0.0.1:8081/api/es/rsearch",    //请求发送到TestServlet处
+        //             data: {"keyword": keyword},
+        //             dataType: "json",        //返回数据形式为json
+        //             success: function (result) {
+        //
+        //             }
+        //             })
+
     }
 
     $.get("http://seckill.gulimall.com/getCurrentSeckillSkus", function (res) {
