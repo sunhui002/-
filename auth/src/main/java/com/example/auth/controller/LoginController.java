@@ -40,9 +40,17 @@ public class LoginController {
 
     public  static Cache<String, String> cache;
     static {
-        cache=Caffeine.newBuilder().expireAfterAccess(10, TimeUnit.SECONDS)
+        cache=Caffeine.newBuilder().expireAfterAccess(30, TimeUnit.MINUTES)
                 .build();
     }
+
+    @GetMapping("/sso/test")
+    public MessageResult test(@RequestParam String token) throws NoSuchPaddingException, IOException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException, InvalidKeySpecException {
+
+        return MessageResult.success("token");
+
+    }
+
 
     @PostMapping("/sso/login")
     public MessageResult login(@RequestParam String username,
@@ -119,6 +127,8 @@ public class LoginController {
         return MessageResult.success(subs);
 
     }
+
+
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
         String RunUrl="你好.html";
