@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -40,15 +43,15 @@ public class LoginController {
 
     public  static Cache<String, String> cache;
     static {
-        cache=Caffeine.newBuilder().expireAfterAccess(10, TimeUnit.SECONDS)
+        cache=Caffeine.newBuilder().expireAfterAccess(30, TimeUnit.MINUTES)
                 .build();
     }
 
     @PostMapping("/sso/login")
     public MessageResult login(@RequestParam String username,
                                @RequestParam String password,
-                               @RequestParam String code
-    ) throws NoSuchPaddingException, IOException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException, InvalidKeySpecException {
+                               @RequestParam String code,
+    HttpServletResponse resp) throws NoSuchPaddingException, IOException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException, InvalidKeySpecException {
         System.out.println("登录");
         User user = userDao.getuserbyid(username);
         System.out.println(password+"    "+user.salt);
@@ -57,6 +60,8 @@ public class LoginController {
         }
         String token = MD5Util.getSalt(20);
         cache.put(token,username);
+        System.out.println(token);
+        resp.addCookie(new Cookie("loginCookie",token));
         return MessageResult.success(token);
 
     }
@@ -121,12 +126,11 @@ public class LoginController {
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
-        String RunUrl="你好.html";
-        String Caption="准备";
-        String md5Str1 = MD5Util.getMD5Str("1" + "mGCV4uO03R");
-        String md5Str2 = MD5Util.getMD5Str("1" + "mGCV4uO03R");
-        System.out.println(md5Str1);
-        System.out.println(md5Str2);
-        System.out.println("select spu_id, spu_name,spu_price,spu_img,spu_description from spu where spu_description like '%${decription}%' ");
-    }
+        TreeMap<Integer,Integer> map=new TreeMap<>();
+        map.put(1,2);
+        map.put(3,4);
+        
+        Integer integer = map.floorKey(0).intValue();
+        System.out.println(map.firstKey());
+         }
 }

@@ -89,6 +89,7 @@
                         layer.msg(oJson.ErrorMessage,{icon: 5});//失败的表情
                         return;
                     }else {
+                        setCookie("token",oJson.KeyValue,30)
                         localStorage.setItem("token",oJson.KeyValue);
                         window.location = 'admin.html';
                         // layer.msg(data.msg, {
@@ -106,6 +107,18 @@
             // window.location = 'admin.html';
             return false;
         })
+
+        function setCookie(name, value, daysToLive) {
+            // 对 cookie 值进行编码以转义其中的分号、逗号和空格
+            var cookie = name + "=" + encodeURIComponent(value);
+
+            if(typeof daysToLive === "number") {
+                /* 设置 max-age 属性 */
+                cookie += "; max-age=" + (daysToLive*24*60*60);
+            }
+            document.cookie = cookie;
+        }
+
     })
 </script>
 </body>

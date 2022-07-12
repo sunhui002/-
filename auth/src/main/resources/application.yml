@@ -13,6 +13,16 @@ spring:
     prefix: classpath:/static/
     cache: false
     suffix: .html
+  redis:
+    #redis单机配置
+    host: 47.111.167.62
+    port: 6009
+  session:
+    hazelcast:
+      flush-mode: on_save
+    namespace: session
+    store-type: redis
+
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true

@@ -587,6 +587,15 @@
 
 </body>
 <script type="text/javascript">
+   var token="";
+   $(function(){getHeaders()})
+   function getHeaders() {
+       var req = new XMLHttpRequest();
+       req.open('GET', document.location.href, false);
+       req.send(null);
+       token=req.getResponseHeader('token');
+   }
+   token=token===undefined?localStorage.getItem("token"):token;
     function search() {
         var keyword=$("#searchText").val()
         window.location.href="search.html?keyword="+keyword;

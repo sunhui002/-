@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class MD5Util {
     public static String getSalt(int n){
-        char[] chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567890!@#$%^&*()".toCharArray();
+        char[] chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567890!@#$^&*()".toCharArray();
         StringBuilder sb = new StringBuilder();
         //此方法中的n为多少，就从数组中取多少个字符
         for (int i = 0; i < n; i++) {

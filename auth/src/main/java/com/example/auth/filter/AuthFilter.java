@@ -7,9 +7,11 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
@@ -18,21 +20,22 @@ import java.util.Optional;
 public class AuthFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String token = request.getParameter("token");
-//        MessageResult error = MessageResult.error("登录失败");
-
         HttpServletResponse resp = (HttpServletResponse) response;
         HttpServletRequest req=(HttpServletRequest) request;
+        String token = request.getParameter("token");
+
+
         if(req.getRequestURI().contains("login")||req.getRequestURI().contains("register")) {
             chain.doFilter(req,resp);
             return;
         }
-        String token1 = req.getHeader("token");
+
         if(!Optional.ofNullable(token).isPresent()){
             resp.addHeader("token","nihao");
-            resp.sendRedirect("/index.html");//绝对路径也可以，相对路径有/和与/
+            resp.sendRedirect("/login.html");//绝对路径也可以，相对路径有/和与/
             return;
          }
+        token=URLDecoder.decode(token);
         if(!Optional.ofNullable(LoginController.cache.getIfPresent(token)).isPresent()){
 
             response.getOutputStream().write("登录失败".getBytes(StandardCharsets.UTF_8));
