@@ -47,6 +47,14 @@ public class LoginController {
                 .build();
     }
 
+    @GetMapping("/sso/test")
+    public MessageResult test(@RequestParam String token) throws NoSuchPaddingException, IOException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException, InvalidKeySpecException {
+
+        return MessageResult.success("token");
+
+    }
+
+
     @PostMapping("/sso/login")
     public MessageResult login(@RequestParam String username,
                                @RequestParam String password,
@@ -124,6 +132,8 @@ public class LoginController {
         return MessageResult.success(subs);
 
     }
+
+
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
         TreeMap<Integer,Integer> map=new TreeMap<>();
