@@ -24,5 +24,6 @@ public class SessionControl {
     public String getsession(HttpServletRequest request){
         HttpSession session = request.getSession();
         return  "获取session"+session.getAttribute("Token");
+
     }
 }
