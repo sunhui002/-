@@ -18,6 +18,14 @@ public class EsAttr{
 //        this.attrvalue = attrvalue;
 //    }
 
+    public String getSkuid() {
+        return skuid;
+    }
+
+    public void setSkuid(String skuid) {
+        this.skuid = skuid;
+    }
+
     public String getAttrname() {
         return attrname;
     }

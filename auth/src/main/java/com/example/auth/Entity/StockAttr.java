@@ -1,13 +1,25 @@
 package com.example.auth.Entity;
 
+public class StockAttr {
 
-public class Attr {
+    public String attrname;
 
-   public int skuid;
+    public int   skuid;
 
-   public String attrcode;
+    public String attrcode;
 
-   public  String attrvalue;
+    public String attrvalue;
+
+    public StockAttr() {
+    }
+
+    public String getAttrname() {
+        return attrname;
+    }
+
+    public void setAttrname(String attrname) {
+        this.attrname = attrname;
+    }
 
     public int getSkuid() {
         return skuid;

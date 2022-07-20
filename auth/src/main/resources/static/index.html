@@ -587,28 +587,36 @@
 
 </body>
 <script type="text/javascript">
-   var token="";
-   $(function(){getHeaders()})
-   function getHeaders() {
-       var req = new XMLHttpRequest();
-       req.open('GET', document.location.href, false);
-       req.send(null);
-       token=req.getResponseHeader('token');
-   }
-   token=token===undefined?localStorage.getItem("token"):token;
+    var token="";
+    function getCookie(name){
+        token=localStorage.getItem("token");
+        if(token!==null) return token;
+        var strcookie = document.cookie;//获取cookie字符串
+        var arrcookie = strcookie.split("; ");//分割
+        //遍历匹配
+        for ( var i = 0; i < arrcookie.length; i++) {
+            var arr = arrcookie[i].split("=");
+            if (arr[0] == name){
+                if(arr[0]!==null) localStorage.setItem(name,arr[1]);
+                return arr[1];
+            }
+        }
+        return "";
+    }
     function search() {
         var keyword=$("#searchText").val()
-        window.location.href="search.html?keyword="+keyword;
-        // $.ajax({
-        //             type: "get",
-        //             async: true,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-        //             url: "http://127.0.0.1:8081/api/es/rsearch",    //请求发送到TestServlet处
-        //             data: {"keyword": keyword},
-        //             dataType: "json",        //返回数据形式为json
-        //             success: function (result) {
-        //
-        //             }
-        //             })
+        // window.location.href="search.html?keyword="+keyword;
+        $.ajax({
+                    type: "get",
+                    async: true,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+                    url: "http://127.0.0.1:8081/api/es/rsearch",    //请求发送到TestServlet处
+                    data: {"keyword": keyword,
+                           "token": getCookie("token")},
+                    dataType: "json",        //返回数据形式为json
+                    success: function (result) {
+                       // document.getElementsById(layedit-tool-active).src="search.html"
+                    }
+                    })
 
     }
 

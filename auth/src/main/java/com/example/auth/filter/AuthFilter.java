@@ -31,11 +31,12 @@ public class AuthFilter implements Filter {
         }
 
         if(!Optional.ofNullable(token).isPresent()){
-            resp.addHeader("token","nihao");
-            resp.sendRedirect("/login.html");//绝对路径也可以，相对路径有/和与/
-            return;
+            chain.doFilter(request,response);
+//            resp.addHeader("token","nihao");
+//            resp.sendRedirect("/login.html");//绝对路径也可以，相对路径有/和与/
+//            return;
          }
-        token=URLDecoder.decode(token);
+//        token=URLDecoder.decode(token);
         if(!Optional.ofNullable(LoginController.cache.getIfPresent(token)).isPresent()){
 
             response.getOutputStream().write("登录失败".getBytes(StandardCharsets.UTF_8));

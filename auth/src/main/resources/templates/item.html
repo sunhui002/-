@@ -8,13 +8,13 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 	<title>产品详情页</title>
 
-    <link rel="stylesheet" type="text/css" href="../../test/css/webbase.css" />
-    <link rel="stylesheet" type="text/css" href="../../test/css/pages-item.css" />
-    <link rel="stylesheet" type="text/css" href="../../test/css/pages-zoom.css" />
-    <link rel="stylesheet" type="text/css" href="../../test/css/widget-cartPanelView.css" />
+    <link rel="stylesheet" type="text/css" href="../static/test/css/webbase.css" />
+    <link rel="stylesheet" type="text/css" href="css/pages-item.css" />
+    <link rel="stylesheet" type="text/css" href="css/pages-zoom.css" />
+    <link rel="stylesheet" type="text/css" href="css/widget-cartPanelView.css" />
     
-    <script type="text/javascript" src="../../test/js/plugins/angularjs/angular.min.js"> </script>
-    <script type="text/javascript" src="../../test/js/base.js"> </script>
+    <script type="text/javascript" src="plugins/angularjs/angular.min.js"> </script>
+    <script type="text/javascript" src="js/base.js"> </script>
 <!--    <script type="text/javascript" src="js/controller/itemController.js"> </script>-->
     <script>
         // var skuList=[
@@ -93,7 +93,7 @@
 							<form action="" class="sui-form form-inline">
 								<!--searchAutoComplete-->
 								<div class="input-append">
-									<input type="text" id="autocomplete"  class="input-error input-xxlarge" />
+									<input type="text" id="autocomplete" type="text" class="input-error input-xxlarge" />
 									<button class="sui-btn btn-xlarge btn-danger" type="button">搜索</button>
 								</div>
 							</form>
@@ -177,7 +177,7 @@
 						<!--默认第一个预览-->
 						<div id="preview" class="spec-preview">
 							<span class="jqzoom">
-							     <img jqimg="//img10.360buyimg.com/cms/s60x60_jfs/t1/29579/36/10843/104275/5c8a1d04E650b5fbd/693d28400bdb70b0.jpg" src=${result.item.spuimg} width="400px" height="400px" />
+							     <img jqimg="//img10.360buyimg.com/cms/s60x60_jfs/t1/29579/36/10843/104275/5c8a1d04E650b5fbd/693d28400bdb70b0.jpg" src="http://192.168.25.133/group1/M00/00/00/wKgZhVnGbYuAO6AHAAjlKdWCzvg253.jpg" width="400px" height="400px" />
 							</span>
 						</div>
 						<!--下方的缩略图-->
@@ -197,7 +197,7 @@
 				</div>
 				<div class="fr itemInfo-wrap">
 					<div class="sku-name">
-						<div class="box-name" th:text="${result.item.sputitle}">
+						<div class="box-name" th:text="${result.item.spuTitle}">
 						华为 HUAWEI Mate 10 6GB+128GB 亮黑色 移动联通电信4G手机 双卡双待
 					</div>
 					<div class="news"><span>打折促销 </span></div>
@@ -208,7 +208,7 @@
 							</div>
 							<div class="fl price">
 								<i>¥</i>
-								<span th:text="${#numbers.formatDecimal(result.item.spuprice,3,2)}">4499.00</span>
+								<span th:text="${#numbers.formatDecimal(item.info.spuprice,3,2)}">4499.00</span>
 								<span>降价通知</span>
 							</div>
 							<div class="fr remark">
@@ -247,10 +247,10 @@
 					<div class="clearfix choose">
 						<div id="specification" class="summary-wrap clearfix" th:each="attr : ${result.saleAttr}" >
 							  <dl>
-								  <dt>选择[[${attr.attrname}]]</dt>
+								  <dt>选择[[${attr.attrName}]]</dt>
 
 								  <dd th:each="val : ${attr.attrvalues}">
-									  <a th:attr=" class='sku_attr_value checked', skus=${val.skuid} ">
+									  <a th:attr=" class='sku_attr_value checked', skus=${val.skuIds} ">
 <!--									  <a th:attr=" class=${#lists.contains(#strings.listSplit(val.skuIds,','),item.info.skuId.toString())-->
 <!--                                   ? 'sku_attr_value checked': 'sku_attr_value'}, skus=${val.skuIds} ">-->
 										  [[${val.attrvalue}]]
@@ -939,7 +939,7 @@
 
 	
 
-<script type="text/javascript" src="../../test/js/plugins/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="js/plugins/jquery/jquery.min.js"></script>
 <script type="text/javascript">
 	$(".sku_attr_value").click(function () {
 		// 1、点击的元素添加上自定义的属性
@@ -994,11 +994,11 @@
 
 })
 </script>
-<script type="text/javascript" src="../../test/js/model/cartModel.js"></script>
-<script type="text/javascript" src="../../test/js/plugins/jquery.easing/jquery.easing.min.js"></script>
-<script type="text/javascript" src="../../test/js/plugins/sui/sui.min.js"></script>
-<script type="text/javascript" src="../../test/js/plugins/jquery.jqzoom/jquery.jqzoom.js"></script>
-<script type="text/javascript" src="../../test/js/plugins/jquery.jqzoom/zoom.js"></script>
+<script type="text/javascript" src="js/model/cartModel.js"></script>
+<script type="text/javascript" src="js/plugins/jquery.easing/jquery.easing.min.js"></script>
+<script type="text/javascript" src="js/plugins/sui/sui.min.js"></script>
+<script type="text/javascript" src="js/plugins/jquery.jqzoom/jquery.jqzoom.js"></script>
+<script type="text/javascript" src="js/plugins/jquery.jqzoom/zoom.js"></script>
 
 <!--页面底部  结束 -->
 </body>

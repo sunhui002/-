@@ -1,11 +1,10 @@
 package com.example.auth.Entity;
 
-import org.springframework.stereotype.Component;
+import java.util.List;
 
-@Component
-public class Spu {
+public class SpuAndSku {
 
-    public String spuId;
+    public int spuid;
 
     public String spuImg;
 
@@ -15,15 +14,25 @@ public class Spu {
 
     public String decription;
 
-    public Spu() {
+    public List<UploadAttr> attrs;
+
+    public SpuAndSku() {
     }
 
-    public String getSpuId() {
-        return spuId;
+    public int getSpuid() {
+        return spuid;
     }
 
-    public void setSpuId(String spuId) {
-        this.spuId = spuId;
+    public void setSpuid(int spuid) {
+        this.spuid = spuid;
+    }
+
+    public SpuAndSku(String spuImg, String spuPrice, String spuTitle, String decription, List<UploadAttr> attrs) {
+        this.spuImg = spuImg;
+        this.spuPrice = spuPrice;
+        this.spuTitle = spuTitle;
+        this.decription = decription;
+        this.attrs = attrs;
     }
 
     public String getSpuImg() {
@@ -57,4 +66,15 @@ public class Spu {
     public void setDecription(String decription) {
         this.decription = decription;
     }
+
+    public List<UploadAttr> getAttrs() {
+        return attrs;
+    }
+
+    public void setAttrs(List<UploadAttr> attrs) {
+        this.attrs = attrs;
+    }
+
+
 }
+
