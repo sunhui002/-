@@ -193,7 +193,7 @@ public class ProductController {
     }
     @GetMapping("/allstock")
     @ResponseBody
-    public MessageResult uploadspuandsku(@RequestParam("spuid") String spuid) {
+    public MessageResult allstock(@RequestParam("spuid") String spuid) {
         List<StockAttr> allsku = productDao.findAllstockattr(spuid);
         Map<Integer, Map<String,String>> skuandattrmap=new HashMap<>();
         Map<Integer,String> skuidandattrnamemap=new HashMap<>();
@@ -231,6 +231,7 @@ public class ProductController {
            stockVo.setStockid(stock.stockid);
            stockVo.setStocknum(stock.stocknum);
            stockVo.setSpuid(stock.spuid);
+           stockVo.setSkuprice(stock.skuprice);
            stockVoList.add(stockVo);
        });
         StockResult stockResult = new StockResult();
@@ -238,6 +239,55 @@ public class ProductController {
         stockResult.setAllattrs(stockAttrVos);
         return MessageResult.success(stockResult);
     }
+
+    @Transactional
+    @PostMapping("/addstock")
+    @ResponseBody
+    public MessageResult addstock(@RequestBody StockVo stockVo) {
+            if(stockVo.getStockid()==-1){
+                StringBuilder attrlist=new StringBuilder();
+                attrlist.append("[");
+                stockVo.getAttrs().stream().forEach(esAttr -> {
+                  String attrcode=  productDao.findattrcode(esAttr.getSkuid(),esAttr.getAttrvalue());
+                    attrlist.append(esAttr.getSkuid()).append(":").append(attrcode).append(",");
+                });
+                attrlist.deleteCharAt(attrlist.length()-1).append("]");
+                Stock stock = new Stock();
+                stock.setStocknum(stockVo.getStocknum());
+                stock.setSpuid(stockVo.getSpuid());
+                stock.setAttrlist(attrlist.toString());
+                stock.setSkuprice(stockVo.skuprice);
+                productDao.inserstock(stock);
+                stockVo.getAttrs().stream().forEach(esAttr -> {
+                    productDao.upadteattrstockid(stock.getStockid(),esAttr.getSkuid(),esAttr.getAttrvalue());
+                });
+                return MessageResult.Ok(true);
+            }else{
+                String oldattrlist = productDao.findattrlistbystockid(String.valueOf(stockVo.getStockid()));
+                String[] split = oldattrlist.replace("]", "").replace("[", "").split(",");
+                Arrays.stream(split).forEach(attr->{
+                    String[] split1 = attr.split(":");
+                    productDao.deleteattrstockids(stockVo.getSpuid(),split1[0],split1[1],stockVo.getStockid());
+                });
+                StringBuilder attrlist=new StringBuilder();
+                attrlist.append("[");
+                stockVo.getAttrs().stream().forEach(esAttr -> {
+                    productDao.upadteattrstockid(stockVo.getStockid(),esAttr.getSkuid(),esAttr.getAttrvalue());
+                    String attrcode=  productDao.findattrcode(esAttr.getSkuid(),esAttr.getAttrvalue());
+                    attrlist.append(esAttr.getSkuid()).append(":").append(attrcode).append(",");
+                });
+                attrlist.deleteCharAt(attrlist.length()-1).append("]");
+                Stock stock = new Stock();
+                stock.setStocknum(stockVo.getStocknum());
+                stock.setSpuid(stockVo.getSpuid());
+                stock.setAttrlist(attrlist.toString());
+                stock.setSkuprice(stockVo.skuprice);
+                productDao.updatestock(stock);
+              return MessageResult.Ok(true);
+            }
+    }
+
+    //商品上传，先改数据库状态，后来上传es，那库存的状态如何一致。
 
     public static void main(String[] args) {
         System.out.println(smallestTrimmedNumbers(

@@ -214,4 +214,34 @@ public interface ProductDao {
     })
     @Update("update  spu set spu_name=#{spu.spuTitle},spu_price=#{spu.spuPrice},spu_img=#{spu.spuImg},spu_description=#{spu.decription} where spu_id=#{spu.spuId} ")
     void updatespu(@Param("spu") Spu spu);
+
+    @Select("select attr_code from attr where attr.attr_value=#{attrvalue} and attr.sku_id=#{skuid}")
+    String findattrcode(@Param("skuid") String skuid,@Param("attrvalue") String attrvalue);
+
+    @Results( {
+            @Result(property = "stocknum",column = "stock_num"),
+            @Result(property = "skuprice",column = "sku_price"),
+            @Result(property = "attrlist",column = "attr_list"),
+            @Result(property = "spuid",column = "spu_id"),
+    })
+    @Insert("insert into stock ( stock_num,sku_price,attr_list,spu_id) " +
+            "values(#{stock.stocknum},#{stock.skuprice},#{stock.attrlist},#{stock.spuid}) ")
+    @Options(useGeneratedKeys=true, keyProperty="stock.stockid")
+    void inserstock(@Param("stock") Stock stock);
+
+    @Update("update attr set stock_ids=CONCAT(ifnull(stock_ids,''),',',#{stockid}) where sku_id=#{skuid} and attr_value=#{attrvalue}")
+    void upadteattrstockid(@Param("stockid") int stockid,@Param("skuid") String skuid,@Param("attrvalue") String attrvalue);
+
+    @Update("update attr inner join sku on sku.sku_id=attr.sku_id set attr.stock_ids=replace(ifnull(attr.stock_ids,''),concat(',',#{stockid}),'') " +
+            " where sku.sku_id=#{skuid} and attr.attr_code=#{attrcode} and sku.spu_id=#{spuid}")
+    void deleteattrstockids(@Param("spuid") int spuid,@Param("skuid") String skuid, @Param("attrcode")String attrcode,@Param("stockid")int stockid);
+
+    @Results( {
+            @Result(property = "stocknum",column = "stock_num"),
+            @Result(property = "skuprice",column = "sku_price"),
+            @Result(property = "attrlist",column = "attr_list"),
+            @Result(property = "spuid",column = "spu_id"),
+    })
+    @Update("update stock set stock_num=#{stock.stocknum},sku_price=#{stock.skuprice},attr_list=#{stock.attrlist},spu_id=#{stock.spuid} " )
+    void updatestock(@Param("stock") Stock stock);
 }
