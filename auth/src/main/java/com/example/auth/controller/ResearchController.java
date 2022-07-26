@@ -3,7 +3,7 @@ package com.example.auth.controller;
 import com.example.auth.Dao.AttrRepository;
 import com.example.auth.Dao.ProductDao;
 import com.example.auth.Entity.*;
-import com.example.auth.SearchService;
+import com.example.auth.Service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 
 @Controller
 @RequestMapping("/api")

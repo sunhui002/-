@@ -1,5 +1,6 @@
 package com.example.auth.config;
 
+import ch.qos.logback.classic.spi.LoggingEvent;
 import com.example.auth.utils.ApplicationContextUtil;
 import lombok.SneakyThrows;
 import org.apache.kafka.clients.producer.Callback;
@@ -8,6 +9,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -48,17 +50,25 @@ public class KafkaAppender<E> extends AppenderBase<E> {
     @SneakyThrows
     @Override
     protected void append(E event) {
+        //threadName （logname，levelInt，levelStr）
+        LoggingEvent loggingEvent= (LoggingEvent) event;
+//        loggingEvent.
+
         String msg = layout.doLayout(event);
         //拼接消息内容
 //        ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>(
 //                TOPIC_NAME, msg);
         System.out.println("[推送数据]:" + msg);
-        //发送kafka的消息
-        KafkaTemplate<String,String> kafkaTemplate = ApplicationContextUtil.applicationContext.getBean(KafkaTemplate.class);
+        //不使用kafka
 
-        ListenableFuture<SendResult<String, String>> send = kafkaTemplate.send(TOPIC_NAME,"key",msg);
-        String s = send.get().toString();
-        System.out.println(s);
+
+        //发送kafka的消息
+
+//        KafkaTemplate<String,String> kafkaTemplate = ApplicationContextUtil.applicationContext.getBean(KafkaTemplate.class);
+//
+//        ListenableFuture<SendResult<String, String>> send = kafkaTemplate.send(TOPIC_NAME,"key",msg);
+//        String s = send.get().toString();
+//        System.out.println(s);
 
     }
     public Layout<E> getLayout() {

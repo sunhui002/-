@@ -63,6 +63,7 @@
 
     <logger name="kafka-event" additivity="false">
         <appender-ref ref="ASYNC-KAFKA-EVENTS" />
+        <appender-ref ref="CONSOLE"/>
     </logger>
 
     <!-- 业务日志：异常 写入本地 -->
@@ -102,7 +103,9 @@
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="FILE" />
     </root>
+
     <logger name="org.apache.kafka" level="DEBUG">
+        <appender-ref ref="ASYNC-KAFKA-EVENTS" />
     </logger>
     <logger name="org.apache.zookeeper" level="DEBUG">
     </logger>

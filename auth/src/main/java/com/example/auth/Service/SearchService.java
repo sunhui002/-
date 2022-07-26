@@ -1,7 +1,6 @@
-package com.example.auth;
+package com.example.auth.Service;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
 import com.example.auth.Dao.AttrRepository;
 import com.example.auth.Entity.EsProduct;
 import com.example.auth.Entity.SearchParam;
@@ -22,7 +21,6 @@ import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.nested.NestedAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.nested.ParsedNested;
-import org.elasticsearch.search.aggregations.bucket.terms.ParsedLongTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
@@ -37,7 +35,6 @@ import org.springframework.util.StringUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class SearchService {
@@ -50,6 +47,7 @@ public class SearchService {
         SearchResult searchResult= null;
         SearchRequest request = bulidSearchRequest(searchParam);
         try {
+
             SearchResponse searchResponse = restHighLevelClient.search(request, RequestOptions.DEFAULT);
             searchResult = bulidSearchResult(searchParam,searchResponse);
         } catch (IOException e) {
