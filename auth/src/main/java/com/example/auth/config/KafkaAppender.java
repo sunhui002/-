@@ -1,6 +1,7 @@
 package com.example.auth.config;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
+import com.example.auth.Service.LogService;
 import com.example.auth.utils.ApplicationContextUtil;
 import lombok.SneakyThrows;
 import org.apache.kafka.clients.producer.Callback;
@@ -23,9 +24,14 @@ import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.Layout;
 import org.springframework.util.concurrent.ListenableFuture;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+
 @Component
 public class KafkaAppender<E> extends AppenderBase<E> {
     //此处,logback.xml中的logger的name属性,输出到本地
+    public ThreadPoolExecutor executor= (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+
     private static final Logger log = LoggerFactory.getLogger("local");
     protected Layout<E> layout;
 //    @Autowired
@@ -58,9 +64,12 @@ public class KafkaAppender<E> extends AppenderBase<E> {
         //拼接消息内容
 //        ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>(
 //                TOPIC_NAME, msg);
+        LogService logService = ApplicationContextUtil.applicationContext.getBean(LogService.class);
         System.out.println("[推送数据]:" + msg);
         //不使用kafka
-
+        executor.execute(()->{
+            logService.uploadlog(loggingEvent);
+        });
 
         //发送kafka的消息
 

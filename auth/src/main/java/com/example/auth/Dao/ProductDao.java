@@ -77,6 +77,23 @@ public interface ProductDao {
     public List<Spu> findaSpubyspuid(@Param("spuid")String spuid);
 
     @Results( {
+            @Result(property = "spuImg",column = "spu_img"),
+            @Result(property = "spuId",column = "spu_id"),
+            @Result(property = "spuPrice",column = "spu_price"),
+            @Result(property = "spuTitle",column = "spu_name"),
+            @Result(property = "decription",column = "spu_description"),
+    })
+    @Select("<script>"+
+            "select spu_id, spu_name,spu_price,spu_img,spu_description from spu \n" +
+            "where spu_id in \n" +
+            "<foreach item='item' collection='spuidlist' separator=',' open='(' close=')' index='index'>\n" +
+            "    #{item, jdbcType=INTEGER}   \n" +
+            "    </foreach>\n"+
+            "</script>")
+    public List<Spu> findaSpubyspuids(@Param("spuidlist")List<String> spuidlist);
+
+
+    @Results( {
             @Result(property = "sputitle",column = "spu_name"),
             @Result(property = "spuprice",column = "spu_price"),
             @Result(property = "spuid",column = "spu_id"),
