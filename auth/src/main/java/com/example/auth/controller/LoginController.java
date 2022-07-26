@@ -11,6 +11,8 @@ import com.example.auth.utils.MD5Util;
 import com.example.auth.utils.CsoftSecurityUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,11 +27,16 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
 public class LoginController {
+
+    private static final Logger log = LoggerFactory.getLogger("kafka-event");
       @Autowired
     UserDao userDao;
 //    loginid: wcadmin
@@ -45,6 +52,13 @@ public class LoginController {
     static {
         cache=Caffeine.newBuilder().expireAfterAccess(30, TimeUnit.MINUTES)
                 .build();
+    }
+
+    @GetMapping("/log")
+    public MessageResult log(@RequestParam("msg") String msg)  {
+            log.info(msg);
+        return MessageResult.success(msg);
+
     }
 
     @GetMapping("/sso/test")
@@ -133,14 +147,181 @@ public class LoginController {
 
     }
 
+//1 0 0 0 1
+//0 0 0 0 0
+//0 0 1 0 1
+//1 5 10  2,4,8.13
+//
+//1 8  4
+
+    // 3 3 -8
+    // 3 6 -2
+    //   3 -5
+    public static int a = 0;
+    public static volatile int b = 0;  //去掉volatile修饰会发生死循环，即变量a对于其他线程不是立即可见
+
+        public static void main(String[] args) throws InterruptedException {
+//            ReentrantLock
+            Thread thread = new Thread(() -> {
+                while(a==0) {
+                    int c = b;
+                }
+            });
+            thread.start();
+
+            Thread.sleep(200);
+
+            new Thread(() -> {
+                a = 1;
+                b = 1;    //volatile可以将前面顺序的写入的变量也会刷入主存
+            }).start();
+
+            thread.join();
+        }
+     public static Set<String> set=new HashSet<>();
+    public static List<String> removeInvalidParentheses(String s) {
+           int dleft=0;
+           int dright=0;
+            for (int i = 0; i < s.length(); i++) {
+            if(s.charAt(i)=='(') dleft++;
+            else if(s.charAt(i)==')') {
+                if (dleft==0) dright++;
+                else dleft--;
+            }
+
+        }
+            df(s,dleft,dright);
+            return new ArrayList<>(set);
+    }
+
+    private static void df(String s, int dleft, int dright) {
 
 
-    public static void main(String[] args) throws NoSuchAlgorithmException {
-        TreeMap<Integer,Integer> map=new TreeMap<>();
-        map.put(1,2);
-        map.put(3,4);
-        
-        Integer integer = map.floorKey(0).intValue();
-        System.out.println(map.firstKey());
-         }
+        for (int i = 0; i <s.length() ; i++) {
+
+            if(check(s)) set.add(s);
+
+            char c=s.charAt(i);
+            if(dleft+dright>s.length()-i) return;
+
+            if(c=='('&&dleft>0){
+                df(s.substring(0,i)+s.substring(i+1),dleft--,dright);
+            }
+            if(c==')'&&dright>0){
+                df(s.substring(0,i)+s.substring(i+1),dleft,dright--);
+            }
+
+
+
+
+
+
+        }
+    }
+
+    private static boolean check(String s) {
+        int left=0;
+        int right=0;
+        for (int i = 0; i < s.length(); i++) {
+            if(s.charAt(i)=='(')  left++;
+            else if(s.charAt(i)==')') right++;
+            if(right>left) return false;
+        }
+        return left==right;
+    }
+
+    public static void indexsort(int[] data, int n){
+
+      int max= Arrays.stream(data).max().getAsInt();
+      int l=String.valueOf(max).length();       //求得最大位数的长度
+         int chu=1;
+
+        for (int i = 0; i < l; i++) {
+            int[] tong = new int[10];
+            int[] tem=new int[n];
+            for (int j = 0; j < n; j++) {
+                int k=(data[j]/chu)%10;
+                tong[k]++;
+            }
+            for (int j = 1; j < 10; j++) {
+                tong[j]=tong[j]+tong[j-1];    //求和后刚好是n，刚好对应与data上的位置
+            }
+            for (int j = n-1; j >=0 ; j--) {
+                int k=(data[j]/chu)%10;
+                tem[tong[k]-1]=data[j];  //这个地方是从后往前排，所以先放大的，所以data数组逆序取
+                tong[k]--;
+            }
+            data=tem;
+             chu*=10;
+        }
+        System.out.println(data);
+    }
+
+    public static int minPatches(int[] nums, int n) {
+      Set<Integer> set=new HashSet<>();
+      int l=nums.length;
+        for (int i = 0; i < nums.length; i++) {
+            set.add(nums[i]);
+        }
+        for (int i = 1; i <1<<l ; i++) {
+            int in=0;
+            for (int j = 0; j <l ; j++) {
+                int shu=1<<j;
+                if((i&shu)>0)
+                    in+=nums[j];
+
+            }
+            set.add(in);
+        }
+        int min=0;
+        for (int i = 1; i <=n ; i++) {
+            if(set.contains(i)) continue;
+            Set<Integer> nset = new HashSet<>();
+            for(int index:set){
+                nset.add(index+i);
+            }
+            nset.add(i);
+            nset.addAll(set);
+            set=nset;
+            nset=null;
+            min++;
+        }
+        return min;
+    }
+
+
+         //1 0 0 1 1 0 0 1  两边到其中间之和为定值。
+        //1 2 3 0 0 1 5 3 2  加上权重后
+//求最小值，二分，如何判断往左还是往右
+    public static int minTotalDistance(int[][] grid) {
+        int[] col = new int[grid.length];
+        int[] cow = new int[grid[0].length];
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                col[i] += grid[i][j];
+                cow[j] += grid[i][j];
+            }
+        }
+         return mind(cow)+mind(col);
+    }
+           public static int mind(int [] cow){
+           int min=0;
+           int left=0;
+           int right=cow.length-1;
+           while(left<right){
+               if(cow[left]==0) {
+                   left++;
+                   continue;
+               }
+               if(cow[right]==0){
+                   right--;
+                   continue;
+               }
+              int cowmin=Math.min(cow[left],cow[right]);
+               min+=(right-left)*cowmin;
+               cow[left]-=cowmin;
+               cow[right]-=cowmin;
+           }
+           return min;
+    }
 }
