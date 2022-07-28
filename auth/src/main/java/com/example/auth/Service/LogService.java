@@ -2,6 +2,7 @@ package com.example.auth.Service;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
 import org.elasticsearch.action.bulk.BulkRequest;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -45,6 +46,7 @@ public class LogService {
         indexmap.put("loglevel",logleveltype);
         HashMap<String, String> timetype = new HashMap<>();
         timetype.put("type","date");
+        timetype.put("format","yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis");
         indexmap.put("time",timetype);
         HashMap<String, String> msgtype = new HashMap<>();
         msgtype.put("type","text");
@@ -53,6 +55,7 @@ public class LogService {
     }
 
     public static SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+    public static SimpleDateFormat simpleDateFormat1=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public final String LOG="log";
 
     public void uploadlog(LoggingEvent loggingEvent ){
@@ -67,7 +70,7 @@ public class LogService {
         log.put("threadname",loggingEvent.getThreadName());
         log.put("loglevelint",loggingEvent.getLevel().levelInt);
         log.put("loglevel",loggingEvent.getLevel().levelStr);
-        log.put("time",nowtime);
+        log.put("time",simpleDateFormat1.format(calendar.getTime()));
         log.put("msg",loggingEvent.getMessage());
         insert(index,log);
 
@@ -78,7 +81,8 @@ public class LogService {
             BulkRequest request = new BulkRequest();
             request.add(new IndexRequest(indexName)
                     .opType("create").source(dataMap, XContentType.JSON));
-            this.client.bulk(request, options);
+            BulkResponse bulk = this.client.bulk(request, options);
+            bulk.hasFailures();
             return Boolean.TRUE ;
         } catch (Exception e){
             e.printStackTrace();

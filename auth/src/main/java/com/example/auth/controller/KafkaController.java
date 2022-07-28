@@ -23,18 +23,18 @@ public class KafkaController {
         return String.format("消息 %s 发送成功！", msg);
     }
 
-    @KafkaListener(topics = "my-replicated-topic", groupId = "jihuGroup")
-    public void listenJihuGroup(ConsumerRecord<String, String> record, Acknowledgment ack) {
+    @KafkaListener(topics = "kafka-log-topic", groupId = "jihuGroup",containerFactory = "myFilterContainerFactory")
+    public void listenJihuGroup(ConsumerRecord<String, String> record) {
         String value = record.value();
         System.out.println("jihuGroup message: " + value);
-        System.out.println("jihuGroup record: " + record);
+//        System.out.println("jihuGroup record: " + record);
         //手动提交offset，一般是提交一个banch，幂等性防止重复消息
         // === 每条消费完确认性能不好！
-        ack.acknowledge();
+//        ack.acknowledge();
     }
 
     //配置多个消费组
-    @KafkaListener(topics = "my-replicated-topic", groupId = "jihuGroup2")
+    @KafkaListener(topics = "my-replicated-topic", groupId = "jihuGroup2",containerFactory = "myFilterContainerFactory")
     public void listenJihuGroup2(ConsumerRecord<String, String> record, Acknowledgment ack) {
         String value = record.value();
         System.out.println("jihuGroup2 message: " + value);

@@ -51,8 +51,12 @@
               class="com.example.auth.config.KafkaAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
             <pattern>%msg</pattern>
+
         </layout>
+        <servers>47.111.167.62:9094</servers>
     </appender>
+
+
 
     <appender name="ASYNC-KAFKA-EVENTS"
               class="ch.qos.logback.classic.AsyncAppender">
@@ -104,10 +108,13 @@
         <appender-ref ref="FILE" />
     </root>
 
-    <logger name="org.apache.kafka" level="DEBUG">
+    <logger name="org.apache.kafka" level="INFO">
         <appender-ref ref="ASYNC-KAFKA-EVENTS" />
     </logger>
     <logger name="org.apache.zookeeper" level="DEBUG">
     </logger>
 
+    <logger name="org.springframework" level="INFO">
+        <appender-ref ref="ASYNC-KAFKA-EVENTS" />
+    </logger>
 </configuration>

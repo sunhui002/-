@@ -4,6 +4,8 @@ public class EsLog {
 
     public String logname;
 
+    public String threadname;
+
     public int loglevelint;
 
     public String loglevel;
@@ -11,6 +13,14 @@ public class EsLog {
     public String time;
 
     public String msg;
+
+    public String getThreadname() {
+        return threadname;
+    }
+
+    public void setThreadname(String threadname) {
+        this.threadname = threadname;
+    }
 
     public EsLog() {
     }
