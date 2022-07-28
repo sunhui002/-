@@ -1,7 +1,5 @@
 package com.example.auth.config;
 
-//import ch.qos.logback.classic.spi.LoggingEvent;
-
 import ch.qos.logback.classic.spi.LoggingEvent;
 import com.alibaba.fastjson.JSONObject;
 import com.example.auth.Entity.EsLog;
@@ -13,7 +11,6 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -102,7 +99,7 @@ public class KafkaAppender<E> extends AppenderBase<E> {
     }
 
 
-    @SneakyThrows
+
     @Override
     protected void append(E event) {
         //threadName （logname，levelInt，levelStr）
@@ -121,13 +118,18 @@ public class KafkaAppender<E> extends AppenderBase<E> {
                 TOPIC_NAME, JSONObject.toJSONString(esLog));
 //        KafkaTemplate<String,String> kafkaTemplate = ApplicationContextUtil.applicationContext.getBean(KafkaTemplate.class);
 //        LogService logService = ApplicationContextUtil.applicationContext.getBean(LogService.class);
-        System.out.println("[推送数据]:" + msg);
+//        System.out.println("[推送数据]:" + msg);
 
         //不使用kafka
-        executor.execute(()->{
-            producer.send(producerRecord);
-        });
+        try {
+            executor.execute(()->{
+                producer.send(producerRecord);
+            });
+        }catch (Exception e){
+            System.out.println("中断异常 ："+e.getMessage());
+        }
 
+        System.out.println("阻塞队列："+executor.getQueue().size());
         //发送kafka的消息
 
 //        KafkaTemplate<String,String> kafkaTemplate = ApplicationContextUtil.applicationContext.getBean(KafkaTemplate.class);

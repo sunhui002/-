@@ -1,6 +1,9 @@
 package com.example.auth.Service;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.example.auth.Entity.EsLog;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
@@ -70,9 +73,21 @@ public class LogService {
         log.put("threadname",loggingEvent.getThreadName());
         log.put("loglevelint",loggingEvent.getLevel().levelInt);
         log.put("loglevel",loggingEvent.getLevel().levelStr);
-        log.put("time",simpleDateFormat1.format(calendar.getTime()));
+        log.put("time",simpleDateFormat1.format(loggingEvent.getTimeStamp()));
         log.put("msg",loggingEvent.getMessage());
         insert(index,log);
+
+    }
+
+    public void uploadlog(String JsLog ){
+        Calendar calendar=Calendar.getInstance();
+        String nowtime = simpleDateFormat.format(calendar.getTime());
+        String index=nowtime+"_"+LOG;
+        if(!checkIndex(index)){
+            createIndex(index,indexmap);
+        }
+        Map<String,Object> dataMap = JSON.parseObject(JsLog);
+        insert(index,dataMap);
 
     }
 
@@ -81,8 +96,7 @@ public class LogService {
             BulkRequest request = new BulkRequest();
             request.add(new IndexRequest(indexName)
                     .opType("create").source(dataMap, XContentType.JSON));
-            BulkResponse bulk = this.client.bulk(request, options);
-            bulk.hasFailures();
+            this.client.bulk(request, options);
             return Boolean.TRUE ;
         } catch (Exception e){
             e.printStackTrace();

@@ -1,5 +1,8 @@
 package com.example.auth.controller;
 
+import com.alibaba.fastjson.JSONObject;
+import com.example.auth.Entity.EsLog;
+import com.example.auth.Service.LogService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -16,6 +19,8 @@ public class KafkaController {
 
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
+    @Autowired
+    LogService logService;
 
     @RequestMapping("/send")
     public String send(@RequestParam("msg") String msg) {
@@ -26,7 +31,9 @@ public class KafkaController {
     @KafkaListener(topics = "kafka-log-topic", groupId = "jihuGroup",containerFactory = "myFilterContainerFactory")
     public void listenJihuGroup(ConsumerRecord<String, String> record) {
         String value = record.value();
-        System.out.println("jihuGroup message: " + value);
+//        System.out.println("jihuGroup message: " + value);
+//        EsLog eslog= JSONObject.parseObject((String) record.value(), EsLog.class);
+        logService.uploadlog(record.value());
 //        System.out.println("jihuGroup record: " + record);
         //手动提交offset，一般是提交一个banch，幂等性防止重复消息
         // === 每条消费完确认性能不好！
